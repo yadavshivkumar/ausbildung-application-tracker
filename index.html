@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7fb">
+  <meta name="description" content="Track your Ausbildung applications, deadlines, interviews, and follow-ups in one place.">
+  <title>Ausbildung Tracker — Application Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Ausbildung Tracker home">
+        <span class="brand-mark">AT</span>
+        <span><strong>Ausbildung</strong><small>APPLICATION TRACKER</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">▦</span> Dashboard</button>
+        <button class="nav-item" data-view="applications"><span class="nav-icon">▤</span> Applications <span class="nav-count" id="navApplicationCount">0</span></button>
+        <button class="nav-item" data-view="deadlines"><span class="nav-icon">◷</span> Deadlines</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <div class="tip-icon">✦</div>
+          <strong>One step at a time</strong>
+          <p>Keep your applications organized and follow up with confidence.</p>
+        </div>
+        <div class="storage-status"><span class="status-dot"></span><span>Saved on this device</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu icon-button" id="mobileMenuBtn" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumbCurrent">Dashboard</strong></div>
+        <div class="topbar-actions">
+          <span class="today-label" id="todayLabel"></span>
+          <button class="button button-primary button-small" id="topAddBtn"><span>＋</span> Add application</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboardView">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR CAREER JOURNEY</p><h1>Good to see you<span class="heading-period">.</span></h1><p class="muted">Here’s an overview of your Ausbildung application progress.</p></div>
+          <button class="button button-secondary" id="dashboardExportBtn">⇩ <span>Export data</span></button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total applications</span><span class="stat-icon icon-blue">▤</span></div><div class="stat-value" id="statTotal">0</div><div class="stat-foot"><span class="stat-sub" id="statActive">0 active</span><span class="mini-track"><i id="activeTrack"></i></span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Interviews</span><span class="stat-icon icon-violet">◷</span></div><div class="stat-value" id="statInterviews">0</div><div class="stat-foot"><span class="stat-sub">Interview stage</span><span class="stat-note">Keep preparing</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Offers received</span><span class="stat-icon icon-green">✧</span></div><div class="stat-value" id="statOffers">0</div><div class="stat-foot"><span class="stat-sub">Offer or accepted</span><span class="stat-note positive" id="offerRate">0% of total</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Upcoming actions</span><span class="stat-icon icon-amber">◷</span></div><div class="stat-value" id="statActions">0</div><div class="stat-foot"><span class="stat-sub">Deadlines & follow-ups</span><span class="stat-note" id="overdueNote">0 overdue</span></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel progress-panel">
+            <div class="panel-heading"><div><h2>Application pipeline</h2><p class="muted">Where your applications stand</p></div><button class="text-button" data-go="applications">View all →</button></div>
+            <div class="pipeline" id="pipeline"></div>
+          </section>
+          <section class="panel deadlines-panel">
+            <div class="panel-heading"><div><h2>Upcoming deadlines</h2><p class="muted">Stay ahead of your next steps</p></div><button class="text-button" data-go="deadlines">View all →</button></div>
+            <div class="deadline-list" id="dashboardDeadlines"></div>
+          </section>
+        </div>
+
+        <section class="panel recent-panel">
+          <div class="panel-heading"><div><h2>Recent applications</h2><p class="muted">Your latest tracked opportunities</p></div><button class="text-button" data-go="applications">All applications →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>COMPANY / ROLE</th><th>LOCATION</th><th>APPLIED</th><th>STATUS</th><th></th></tr></thead><tbody id="recentTableBody"></tbody></table></div>
+          <div class="empty-state hidden" id="recentEmpty"><div class="empty-icon">▤</div><strong>No applications yet</strong><p>Add your first opportunity to start tracking your progress.</p><button class="button button-primary" data-add>＋ Add application</button></div>
+        </section>
+      </section>
+
+      <section class="view" id="applicationsView">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR OPPORTUNITIES</p><h1>Applications<span class="heading-period">.</span></h1><p class="muted">Manage every company, status, and next step in one place.</p></div>
+          <button class="button button-primary" data-add>＋ Add application</button>
+        </div>
+        <section class="panel applications-panel">
+          <div class="toolbar">
+            <label class="search-box"><span>⌕</span><input type="search" id="searchInput" placeholder="Search company, role, or city..." aria-label="Search applications"></label>
+            <select id="statusFilter" aria-label="Filter by status"><option value="">All statuses</option></select>
+            <select id="sortSelect" aria-label="Sort applications"><option value="updated">Recently updated</option><option value="applied-desc">Application date: newest</option><option value="applied-asc">Application date: oldest</option><option value="deadline">Deadline: soonest</option><option value="company">Company: A–Z</option></select>
+            <button class="button button-secondary" id="clearFiltersBtn">Reset</button>
+          </div>
+          <div class="results-line"><span id="resultsCount">0 applications</span><span>Changes are saved automatically</span></div>
+          <div class="table-wrap"><table><thead><tr><th>COMPANY / ROLE</th><th>LOCATION</th><th>APPLIED</th><th>DEADLINE</th><th>STATUS</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="applicationsTableBody"></tbody></table></div>
+          <div class="empty-state hidden" id="applicationsEmpty"><div class="empty-icon">⌕</div><strong id="applicationsEmptyTitle">No applications found</strong><p id="applicationsEmptyText">Try changing your search or filters.</p><button class="button button-primary" data-add>Add application</button></div>
+        </section>
+      </section>
+
+      <section class="view" id="deadlinesView">
+        <div class="page-heading"><div><p class="eyebrow">PLAN YOUR NEXT MOVE</p><h1>Deadlines & follow-ups<span class="heading-period">.</span></h1><p class="muted">Keep application deadlines, interviews, and follow-up tasks on your radar.</p></div><button class="button button-primary" data-add>＋ Add application</button></div>
+        <div class="deadline-summary" id="deadlineSummary"></div>
+        <section class="panel deadline-page-panel"><div class="panel-heading"><div><h2>Upcoming and overdue</h2><p class="muted">Sorted by date, with the most urgent first.</p></div></div><div id="allDeadlineItems" class="all-deadline-items"></div><div class="empty-state hidden" id="deadlinesEmpty"><div class="empty-icon">✓</div><strong>Nothing urgent on your calendar</strong><p>Add deadlines or follow-up dates to keep your next steps visible.</p><button class="button button-primary" data-add>＋ Add application</button></div></section>
+      </section>
+
+      <footer class="app-footer"><span>Ausbildung Tracker <span class="footer-dot">•</span> Built with HTML, CSS & JavaScript</span><span>Private by design · Data stays in your browser</span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="applicationModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header"><div><p class="eyebrow">APPLICATION DETAILS</p><h2 id="modalTitle">Add application</h2><p class="muted">Keep the details handy so your next step is clear.</p></div><button class="icon-button" id="closeModalBtn" aria-label="Close form">×</button></div>
+      <form id="applicationForm" novalidate>
+        <input type="hidden" id="applicationId">
+        <div class="form-grid">
+          <div class="field full"><label for="company">Company name <span class="required">*</span></label><input id="company" name="company" required maxlength="100" placeholder="e.g. Siemens AG"><small class="field-error" id="companyError"></small></div>
+          <div class="field"><label for="role">Ausbildung occupation <span class="required">*</span></label><input id="role" name="role" required maxlength="120" placeholder="e.g. Fachinformatiker/in"><small class="field-error" id="roleError"></small></div>
+          <div class="field"><label for="city">City / location <span class="required">*</span></label><input id="city" name="city" required maxlength="100" placeholder="e.g. Berlin"><small class="field-error" id="cityError"></small></div>
+          <div class="field"><label for="appliedDate">Application date <span class="required">*</span></label><input id="appliedDate" name="appliedDate" type="date" required><small class="field-error" id="appliedDateError"></small></div>
+          <div class="field"><label for="status">Current status <span class="required">*</span></label><select id="status" name="status" required></select></div>
+          <div class="field"><label for="deadline">Application deadline</label><input id="deadline" name="deadline" type="date"><small class="field-hint">Leave blank if there is no known deadline.</small></div>
+          <div class="field"><label for="interviewDate">Interview date</label><input id="interviewDate" name="interviewDate" type="date"></div>
+          <div class="field"><label for="followUpDate">Next follow-up</label><input id="followUpDate" name="followUpDate" type="date"></div>
+          <div class="field"><label for="website">Company website</label><input id="website" name="website" type="url" maxlength="300" placeholder="https://example.com"><small class="field-error" id="websiteError"></small></div>
+          <div class="field"><label for="contact">Contact person / email</label><input id="contact" name="contact" maxlength="160" placeholder="Recruiter or contact details"></div>
+          <div class="field full"><label for="notes">Notes / next action</label><textarea id="notes" name="notes" rows="3" maxlength="1500" placeholder="e.g. Send B2 certificate, prepare for technical interview..."></textarea><div class="field-bottom"><small class="field-hint">Keep track of documents, conversations, or preparation.</small><small id="notesCount">0 / 1500</small></div></div>
+        </div>
+        <div class="form-error-banner hidden" id="formErrorBanner" role="alert"></div>
+        <div class="modal-actions"><button type="button" class="button button-secondary" id="cancelModalBtn">Cancel</button><button type="submit" class="button button-primary" id="saveApplicationBtn">Save application</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="modal detail-modal"><div class="modal-header"><div><p class="eyebrow">APPLICATION OVERVIEW</p><h2 id="detailTitle">Application details</h2></div><button class="icon-button" id="closeDetailBtn" aria-label="Close details">×</button></div><div id="detailContent"></div><div class="modal-actions"><button class="button button-secondary" id="detailCloseBtn">Close</button><button class="button button-primary" id="detailEditBtn">Edit application</button></div></div>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <input type="file" id="importFileInput" accept=".json,application/json" hidden>
+</body>
+</html>
